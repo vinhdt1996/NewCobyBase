@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/fragment_main">
+
+    <fragment
+        android:id="@+id/fragment_main"
+        android:name="com.example.newcobybase.ui.main.MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_fragment_main_to_fragment_json_place_holder"
+            app:destination="@id/fragment_json_place_holder" />
+        <action
+            android:id="@+id/action_fragment_main_to_fragment_stack_over_flow"
+            app:destination="@id/fragment_stack_over_flow" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_json_place_holder"
+        android:name="com.example.newcobybase.ui.jsonPlaceHolder.JsonPlaceHolderFragment"
+        tools:layout="@layout/fragment_json_place_holder" />
+
+    <fragment
+        android:id="@+id/fragment_stack_over_flow"
+        android:name="com.example.newcobybase.ui.stackOverFlow.StackOverFlowFragment"
+        tools:layout="@layout/fragment_stack_over_flow" />
+
+
+</navigation>
