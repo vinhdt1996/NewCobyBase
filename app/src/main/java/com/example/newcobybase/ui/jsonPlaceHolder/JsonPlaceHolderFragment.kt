@@ -7,11 +7,15 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.newcobybase.R
 import com.example.newcobybase.base.ui.BaseFragment
 import com.example.newcobybase.databinding.FragmentJsonPlaceHolderBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class JsonPlaceHolderFragment : BaseFragment<FragmentJsonPlaceHolderBinding>() {
@@ -45,10 +49,15 @@ class JsonPlaceHolderFragment : BaseFragment<FragmentJsonPlaceHolderBinding>() {
     }
 
     override fun initObservers() {
-        viewModel.listPosts.observe(viewLifecycleOwner) { posts ->
-            if (posts.isNotEmpty()) {
-                val titles = posts.map { "${it.title}\n" }
-                binding.tvResult.text = titles.toString()
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.listPosts.collect { posts ->
+                    if (posts.isNotEmpty()) {
+                        val titles = posts.map { "${it.title}\n" }
+                        binding.tvResult.text = titles.toString()
+                    }
+                }
             }
         }
     }

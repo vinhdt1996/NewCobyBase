@@ -7,11 +7,15 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.newcobybase.R
 import com.example.newcobybase.base.ui.BaseFragment
 import com.example.newcobybase.databinding.FragmentStackOverFlowBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class StackOverFlowFragment : BaseFragment<FragmentStackOverFlowBinding>() {
@@ -45,10 +49,14 @@ class StackOverFlowFragment : BaseFragment<FragmentStackOverFlowBinding>() {
     }
 
     override fun initObservers() {
-        viewModel.listQuestion.observe(viewLifecycleOwner) { questions ->
-            if (questions?.isNotEmpty() == true) {
-                val titles = questions.map { "${it.title}\n" }
-                binding.tvResult.text = titles.toString()
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.listQuestion.collect { questions ->
+                    if (questions.isNotEmpty()) {
+                        val titles = questions.map { "${it.title}\n" }
+                        binding.tvResult.text = titles.toString()
+                    }
+                }
             }
         }
     }

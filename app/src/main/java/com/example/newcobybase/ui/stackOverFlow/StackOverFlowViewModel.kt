@@ -1,12 +1,13 @@
 package com.example.newcobybase.ui.stackOverFlow
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.newcobybase.base.ui.BaseViewModel
 import com.example.newcobybase.data.model.Question
 import com.example.newcobybase.data.repository.StackOverFlowRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,9 +19,8 @@ class StackOverFlowViewModel @Inject constructor(private val stackOverFlowReposi
     private var pageSize = 2
     private var hasMore = false
 
-    private var _listQuestions = MutableLiveData<List<Question>?>()
-    val listQuestion: LiveData<List<Question>?>
-        get() = _listQuestions
+    private var _listQuestions = MutableStateFlow<List<Question>>(listOf())
+    val listQuestion: StateFlow<List<Question>> = _listQuestions.asStateFlow()
 
     override fun fetchData() {
         showLoading(true)
@@ -31,7 +31,7 @@ class StackOverFlowViewModel @Inject constructor(private val stackOverFlowReposi
     private suspend fun getData() {
         val result = stackOverFlowRepository.getQuestion(page, pageSize)
         hasMore = result.hasMore ?: false
-        _listQuestions.postValue(result.items)
+        _listQuestions.value = result.items
     }
 
     fun loadMore() {
